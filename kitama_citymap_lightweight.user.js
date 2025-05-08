@@ -7,6 +7,7 @@
 // @match        https://wdrb.work/otherside/field.php
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=wdrb.work
 // @grant        none
+// @run-at       document-body
 // ==/UserScript==
 'use strict';document.querySelectorAll('.move_command .area_charalist img').forEach(e=>{e.dataset.s=e.src;e.removeAttribute('src');});
 const o=new MutationObserver(r=>{r.forEach(i=>{const t=i.target;if(!t.classList.contains('loaded')){t.querySelectorAll('.area_charalist img').forEach(e=>e.src=e.dataset.s);t.classList.add('loaded');}})});
