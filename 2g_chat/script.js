@@ -1,4 +1,4 @@
-import { Ajax } from "./ajax";
+import { Ajax } from "./ajax.js";
 
 const form = document.getElementById('talk');
 let lock = [];
@@ -44,11 +44,7 @@ const append_icon = (text) => {
 }
 {
 	const icon_text = sessionStorage.getItem('icon');
-	if (icon_text) {
-		form.querySelector('[name="avatar_url]"').style.content = append_icon(icon_text) ?? '';
-	} else {
-		form.querySelector('[name="avatar_url]"').style.content = '';
-	}
+	if (icon_text) form.querySelector('.icon>img').src = append_icon(icon_text) ?? '';
 }
 document.documentElement.addEventListener('keydown', () => {
 	if (!lock.includes('paste')) {
@@ -57,3 +53,5 @@ document.documentElement.addEventListener('keydown', () => {
 	}
 })
 document.documentElement.addEventListener('keyup', () => lock = lock.filter(v => v !== 'paste'))
+
+form.querySelector('[name="avatar_url"]').addEventListener('focus', () => console.log('icon select'));

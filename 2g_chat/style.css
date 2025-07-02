@@ -1,11 +1,24 @@
 body {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 20px;
+	align-items: center;
 
-	>p {
-		width: 30rem;
+	>* {
+		width: calc(30rem + 48px);
 	}
+}
+
+* {
+	margin: 0;
+}
+
+:not(input, textarea) {
+	padding: 0;
+}
+
+li {
+	list-style: none;
 }
 
 #talk {
@@ -15,21 +28,23 @@ body {
 		"i b" 1fr
 		"f f" auto / auto 1fr;
 
-	>[name="avatar_url"] {
+	>.icon {
 		grid-area: i;
+
+		[name] {
+			display: none;
+		}
 	}
 
-	>[name="username"] {
+	>.name {
 		grid-area: n;
-		width: 0;
 	}
 
-	>[name="content"] {
+	>.body {
 		grid-area: b;
-		width: 30rem;
 	}
 
-	>div {
+	>menu {
 		grid-area: f;
 		display: flex;
 		justify-content: space-between;

@@ -10,14 +10,18 @@
 		<p>クリップボードにアイコンURLを持っている状態で貼り付け(Ctrl+V)でアイコン登録<br>改行区切りで複数を同時登録可能</p>
 		<p><a target="_blank" href="https://www.rabbithutch.site/usagoya">うさごや</a></p>
 		<form id="talk" autocomplete="off" method="post" data-encode="json" action="https://discord.com/api/webhooks/1389818986434138242/ooPN5pDCd82D7kGRLyneY7spl83dUqC_7SmO6GIAcN1XXBgzHUvjNsXcC5yfhm4PwssI">
-			<select name="avatar_url">
-			</select>
-			<input type="text" name="username" placeholder="名前">
-			<textarea name="content" placeholder="発言内容"></textarea>
-			<div>
-				<button type="button" class="del_icon">アイコン削除</button>
-				<button type="button" class="submit">送信</button>
-			</div>
+			<label class="icon">
+				<select name="avatar_url">
+					<option value="https://placehold.jp/48x48.png"><img width="48" height="48" src="https://placehold.jp/48x48.png"></option>
+				</select>
+				<img width="48" height="48" src="https://placehold.jp/48x48.png">
+			</label>
+			<input type="text" class="name" name="username" placeholder="名前">
+			<textarea class="body" name="content" placeholder="発言内容"></textarea>
+			<menu>
+				<li><button type="button" class="del_icon">アイコン削除</button></li>
+				<li><button type="button" class="submit">送信</button></li>
+			</menu>
 		</form>
 	</body>
 </html>
