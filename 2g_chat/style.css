@@ -1,0 +1,37 @@
+body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	>p {
+		width: 30rem;
+	}
+}
+
+#talk {
+	display: grid;
+	grid-template:
+		"i n" auto
+		"i b" 1fr
+		"f f" auto / auto 1fr;
+
+	>[name="avatar_url"] {
+		grid-area: i;
+	}
+
+	>[name="username"] {
+		grid-area: n;
+		width: 0;
+	}
+
+	>[name="content"] {
+		grid-area: b;
+		width: 30rem;
+	}
+
+	>div {
+		grid-area: f;
+		display: flex;
+		justify-content: space-between;
+	}
+}

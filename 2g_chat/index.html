@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+	<head>
+		<link rel="stylesheet" href="style.css">
+		<script type="module" src="script.js"></script>
+		<title>2g ChatRoom</title>
+	</head>
+	<body>
+		<p>このページで発言すると、ディスコードの「治外法権-なしなし/#定期ゲーム」チャンネルに投稿されます</p>
+		<p>クリップボードにアイコンURLを持っている状態で貼り付け(Ctrl+V)でアイコン登録<br>改行区切りで複数を同時登録可能</p>
+		<p><a target="_blank" href="https://www.rabbithutch.site/usagoya">うさごや</a></p>
+		<form id="talk" autocomplete="off" method="post" data-encode="json" action="https://discord.com/api/webhooks/1389818986434138242/ooPN5pDCd82D7kGRLyneY7spl83dUqC_7SmO6GIAcN1XXBgzHUvjNsXcC5yfhm4PwssI">
+			<select name="avatar_url">
+			</select>
+			<input type="text" name="username" placeholder="名前">
+			<textarea name="content" placeholder="発言内容"></textarea>
+			<div>
+				<button type="button" class="del_icon">アイコン削除</button>
+				<button type="button" class="submit">送信</button>
+			</div>
+		</form>
+	</body>
+</html>
