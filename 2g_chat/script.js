@@ -22,7 +22,7 @@ talk.querySelector('.submit').addEventListener('click', () => proc(submit));
 talk.querySelector('.del_icon').addEventListener('click', () => proc(del_icon));
 
 const append_icon = (text) => {
-	const e = form.querySelector('[name="avatar_url]"');
+	const e = form.querySelector('[name="avatar_url"]');
 	let icon_text = sessionStorage.getItem('icon') ?? '';
 	let ret = null;
 	text.split(/\n|\r|\n\r/).forEach(line => {
