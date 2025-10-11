@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ソラニワいっぱい購入mod
-// @namespace    https://pppp-pear-qqqq.github.io/share/clst/shop_multi_buy.user.js
+// @namespace    https://pppp-pear-qqqq.github.io/share/clst/shop_multi_buy.js
 // @version      2025-10-11
 // @description  いっぱい購入します
 // @author       なしなし
@@ -36,17 +36,24 @@
     i.name = 'mod-num';
     i.size = 1;
     p.insertBefore(document.createTextNode('　個　'), b);
+    p.appendChild(document.createTextNode('複数購入時のウェイトms（1000以上推奨、変更不要）　'));
+    const w = p.appendChild(document.createElement('input'));
+    w.type = 'text';
+    w.name = 'mod-wait';
+    w.size = 1;
+    w.value = '1200';
     b.addEventListener('click', async e => {
         if (i.value === '') return;
         e.preventDefault();
         try {
             const num = Number(i.value);
-            const m = p.appendChild(document.createElement('span'));
+            const m = p.insertBefore(document.createElement('span'), b.nextElementSibling.nextElementSibling);
+            const s = Number(w.value);
             m.innerText = '処理中';
             for await (const r of multi_buy(f.elements.namedItem('ino').value, num)) {
                 console.log(`${r} / ${num}`);
                 m.innerText += '.';
-                await new Promise(r => setTimeout(r, 1000));
+                await new Promise(r => setTimeout(r, s));
             }
             m.remove();
             alert('購入完了しました');
