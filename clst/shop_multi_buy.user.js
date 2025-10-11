@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ソラニワいっぱい購入mod
-// @namespace    https://pppp-pear-qqqq.github.io/share/clst/shop_multi_buy.js
+// @namespace    https://pppp-pear-qqqq.github.io/share/clst/shop_multi_buy.user.js
 // @version      2025-10-11
 // @description  いっぱい購入します
 // @author       なしなし
