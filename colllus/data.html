@@ -7,8 +7,10 @@
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 		<meta name="viewport" content="width=device-width,viewport-fit=cover">
 		<title>かられす／れぐるす</title>
-		<meta name="description" content="">
+		<meta name="description" content="オリジナルキャラクター登録型ゲーム『かられす／れぐるす』">
+		<meta property="og:url" content="https://pppp-pear-qqqq.github.io/share/colllus/">
 		<meta property="og:type" content="website">
+		<meta property="og:image" content="https://pppp-pear-qqqq.github.io/share/colllus/image/card.png">
 		<meta property="og:site_name" content="かられす／れぐるす">
 		<meta name="twitter:card" content="summary">
 		<meta name="twitter:site" content="@yeet_1tp">
@@ -44,6 +46,16 @@
 			.effect {
 				margin-left: 1em;
 				color: var(--neutral-color);
+
+				>span.status {
+					&::before {
+						content: "[";
+					}
+
+					&::after {
+						content: "]";
+					}
+				}
 			}
 		</style>
 		<script>document.documentElement.dataset.theme = localStorage.getItem('colllus/theme') ?? 'light'</script>
@@ -152,6 +164,10 @@
 					<li>[優勝]……おめでたいです。戦闘終了時にリセットされず、永続的に残ります。</li>
 					<li>[HP]……0になっても特に何も起こりません。特殊な効果はありません。</li>
 				</ul>
+				<p>
+					あなたが思いついたことは多分ほとんど全て可能です。そういうゲームにするつもりです。<br>
+					だからこそ、『かられす／れぐるす』はあくまで「戦いごっこ」と言っています。
+				</p>
 			</article>
 		</main>
 		<dialog id="help"></dialog>
