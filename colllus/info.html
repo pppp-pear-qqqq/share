@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
+		<title>かられす／れぐるす</title>
+		<meta name="description" content="">
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="かられす／れぐるす">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:site" content="@yeet_1tp">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
+		<link rel="stylesheet" href="style/common.css">
+		<link rel="stylesheet" href="style/view_transition.css">
+		<link rel="stylesheet" href="style/help.css">
+		<link rel="stylesheet" href="style/header.css">
+		<link rel="stylesheet" href="style/info.css">
+		<script>document.documentElement.dataset.theme = localStorage.getItem('colllus/theme') ?? 'light'</script>
+		<script src="script/custom_elem.js"></script>
+		<script src="script/common.js" defer></script>
+	</head>
+	<body>
+		<header>
+			<hamburger-menu></hamburger-menu>
+			<menu>
+				<li><a href="index.html" title="トップページ"><i class="ri-planet-line"></i>トップページ</a></li>
+				<li><a href="rule.html" title="ルール"><i class="ri-book-2-line"></i>ルール</a></li>
+				<li><a href="data.html" title="データ"><i class="ri-palette-line"></i>データ</a></li>
+				<li><a href="info.html" title="お知らせ"><i class="ri-news-line"></i>お知らせ</a></li>
+				<li class="partition"></li>
+				<li class="icons">
+					<i class="ri-sun-line" title="ライトテーマ" role="button" data-theme="light"></i>
+					<i class="ri-moon-line" title="ダークテーマ" role="button" data-theme="dark"></i>
+				</li>
+				<li role="none">2025.12 - 2026.01</li>
+			</menu>
+		</header>
+		<main class="scroll y">
+			<h2>お知らせ</h2>
+			<article>
+				<h3>『かられす／れぐるす』について<time datetime="2025-11-01">2025-11-01</time></h3>
+				<p>
+					<u>このゲームは<a target="_blank" href="https://andymente.moo.jp/html/game/phelen/phelen15/phelen15.htm">ポレン</a>ではありません。</u><br>
+					<a target="_blank" href="https://andymente.moo.jp/html/game/phelen/phelen15/phelen15.htm">ポレン</a>だと思って参加された方には大変申し訳ありませんが、そういう感じなので、よろしくお願いします。
+				</p>
+				<p>
+					もしあなたがこのサイトの各種レイアウトに見覚えがあったとした場合、あなたが想起した運営者とこのゲームの運営者は別人です。<br>
+					工数削減のためレイアウトを借りています。<br>
+					借りてきた人は、これについて非常によく一般化できている優れたページ構成なのでいくらでも使っていいと言っていました。
+				</p>
+				<p>
+					基本的にこのサイトはライトテーマで見ることを想定しています。<br>
+					実装が簡単だったのでダークテーマも実装してありますが、見え方について保証はしません。
+				</p>
+				<p></p>
+				<p>
+					以上、特に利用規約ではないので了承する必要のない文章でした。<br>
+					『かられす／れぐるす』をよろしくお願いいたします。
+				</p>
+			</article>
+			<article>
+				<h3>ノート機能<time datetime="2025-11-01">2025-11-01</time></h3>
+				<p>
+					『かられす／れぐるす』にはノートという機能があります。プレイヤーが好きなことを書いて公開できます。<br>
+					要するにポレンの紙切れなのですが、一人で複数作成することができます。<br>
+					ひとつのノートにつき10000文字まで記入することができます。
+				</p>
+				<p>
+					ノート作成枠については、基本的に0枠(作成不可)であり、<a>Boothでご支援いただく</a>ことで金額に応じて枠を付与したいと思っています。<br>
+					1枠あたり0.01円です。100円で10,000枠を購入できます。1,000円なら100,000枠！　すごい！<br>
+					Boothの仕様で100円以上でないと商品を登録できないみたいなので、最低10,000枠からということになります。
+				</p>
+			</article>
+			<article>
+				<h3>対応中の案件</h3>
+				<p>随時更新されていきます。</p>
+				<ul>
+					<li>スキル効果の表示形式を切り替え可能にする</li>
+					<li>戦闘画面を作る</li>
+					<li>スキルをいっぱい考える</li>
+				</ul>
+			</article>
+			<article>
+				<h3>おまけ</h3>
+				<section>
+					<h4>タッチパッドを使用していて、スクロールに引っかかりを感じる場合</h4>
+					<script>
+						function toggle_will_change() {
+							const root = document.documentElement.dataset;
+							switch (root.willChange) {
+								case 'on':
+									root.willChange = 'off';
+									localStorage.setItem('will-change', 'off');
+									break;
+								default:
+									root.willChange = 'on';
+									localStorage.setItem('will-change', 'on');
+							}
+						}
+					</script>
+					<p>
+						<button onclick="toggle_will_change()">高コストレンダリング: <span class="will-change-on">有効</span><span class="will-change-off">無効</span></button><br>
+						こちらのボタンを押して高コストのレンダリングを有効にすることで解決するかもしれません。<br>
+						解決しなくてもあまり怒らないでください。<br>
+						これは単純に画質などを上げるみたいな話ではありません。困っていないなら無駄にマシンに負荷をかけるだけになるので、設定は不要です。
+					</p>
+					<details>
+						<summary>仕組み</summary>
+						<p>
+							このボタンを押すと、スクロール可能な要素に"will-change: scroll-position;"というスタイルが適用されます。<br>
+							これは、スクロールの表示を頑張ってくださいとブラウザにお願いするためのスタイルです。<br>
+							ですが、基本的にはこんなものが無くてもちゃんとブラウザは表示してくれます。一部どうしてもうまくいかないケースで使用するものです。<br>
+							参考: <a target="_blank" href="https://developer.mozilla.org/ja/docs/Web/CSS/will-change">will-change(MDN docs)</a>
+						</p>
+					</details>
+				</section>
+				<section>
+					<h4>iOS17.1以前のバージョンへの対応予定について</h4>
+					<p>
+						ありません。<br>
+						古いiPhoneを使っている方は、バージョンアップするか買い替えるかPCからのプレイをお願いします。
+					</p>
+					<p>
+						iOS17.1以前だと具体的にどうなるかというと、ページのレイアウトが崩れたり、画面の一部が表示されなかったりします。<br>
+						特にこのページとか滅茶苦茶になってるんじゃないかなと思いますが、あなたが古いiOSを使っているなら仕様です。<br>
+						これは、そのバージョン以前のiOSのブラウザではCSSネストという仕組みへの対応が不十分だからです。
+					</p>
+				</section>
+			</article>
+		</main>
+		<dialog id="help"></dialog>
+	</body>
+</html>

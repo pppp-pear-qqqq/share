@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
+		<title>かられす／れぐるす</title>
+		<meta name="description" content="">
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="かられす／れぐるす">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:site" content="@yeet_1tp">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
+		<link rel="stylesheet" href="style/common.css">
+		<link rel="stylesheet" href="style/view_transition.css">
+		<link rel="stylesheet" href="style/help.css">
+		<link rel="stylesheet" href="style/header.css">
+		<link rel="stylesheet" href="style/info.css">
+		<link rel="stylesheet" href="style/status.css">
+		<style>
+			.religion {
+				transition: color 0.2s;
+			}
+
+			.religion.rr:hover {
+				color: #ff0000;
+			}
+
+			.religion.gg:hover {
+				color: #00ff00;
+			}
+
+			.religion.bb:hover {
+				color: #0000ff;
+			}
+
+			.skill {
+				font-size: 110%;
+			}
+
+			.effect {
+				margin-left: 1em;
+				color: var(--neutral-color);
+			}
+		</style>
+		<script>document.documentElement.dataset.theme = localStorage.getItem('colllus/theme') ?? 'light'</script>
+		<script src="script/custom_elem.js"></script>
+		<script src="script/common.js" defer></script>
+		<script src="script/status.js" defer></script>
+	</head>
+	<body>
+		<header>
+			<hamburger-menu></hamburger-menu>
+			<menu>
+				<li><a href="index.html" title="トップページ"><i class="ri-planet-line"></i>トップページ</a></li>
+				<li><a href="rule.html" title="ルール"><i class="ri-book-2-line"></i>ルール</a></li>
+				<li><a href="data.html" title="データ"><i class="ri-palette-line"></i>データ</a></li>
+				<li><a href="info.html" title="お知らせ"><i class="ri-news-line"></i>お知らせ</a></li>
+				<li class="partition"></li>
+				<li class="icons">
+					<i class="ri-sun-line" title="ライトテーマ" role="button" data-theme="light"></i>
+					<i class="ri-moon-line" title="ダークテーマ" role="button" data-theme="dark"></i>
+				</li>
+				<li role="none">2025.12 - 2026.01</li>
+			</menu>
+		</header>
+		<main class="scroll y">
+			<article>
+				<h3>レリジョン</h3>
+				<p>
+					プレイヤーは三つのレリジョンからどれかひとつを選んで所属します。<br>
+					レリジョンごとに使用できるスキルが異なります。
+				</p>
+				<p>スキル効果の読み方については、今のところ細かい説明はしません。気合で読んでください。</p>
+				<section>
+					<h3 class="religion rr">Regal-Realm</h3>
+					<p><span class="religion rr">RR</span>。権威的。</p>
+					<h4>スキル</h4>
+					<ul>
+						<li><span class="skill">でこぴん</span><span class="effect">物理攻撃</span></li>
+						<li><span class="skill">ヴァハ</span><span class="effect">1 MP消費 魔法攻撃</span></li>
+						<li><span class="skill">暗黒剣</span><span class="effect">自[HP] 2 /= 2 回 物理攻撃</span></li>
+						<li><span class="skill">タロット</span><span class="effect">5 ターン以上 8 MP消費 :不思議なことが起こる</span></li>
+						<li><span class="skill">火精霊召喚</span><span class="effect">8 MP消費 自[火精霊] 1 +=</span></li>
+						<li><span class="skill">風精霊召喚</span><span class="effect">8 MP消費 自[風精霊] 1 +=</span></li>
+						<li><span class="skill">水精霊召喚</span><span class="effect">8 MP消費 自[水精霊] 1 +=</span></li>
+						<li><span class="skill">光精霊召喚</span><span class="effect">8 MP消費 自[光精霊] 1 +=</span></li>
+						<li><span class="skill">マンダラ</span><span class="effect">4 予言 自[HP] 自[MND] ** 2 +=</span></li>
+						<li><span class="skill">キャンドラ</span><span class="effect">5 予言 物理攻撃 :相手を戦闘から追放</span></li>
+						<li><span class="skill">ウロボロス</span><span class="effect">6 ターン以上 12 MP消費 場[ターン] 3 -=</span></li>
+						<li><span class="skill">スタンダード</span><span class="effect">:勝利条件:戦闘終了時に相手の[HP]が0以下</span></li>
+					</ul>
+				</section>
+				<section>
+					<h3 class="religion gg">Glit-Gravisphere</h3>
+					<p><span class="religion gg">GG</span>。利己的。</p>
+					<h4>スキル</h4>
+					<ul>
+						<li><span class="skill">でこぴん</span><span class="effect">物理攻撃</span></li>
+						<li><span class="skill">呪文詠唱</span><span class="effect">4 MP消費 魔法攻撃 自[詠唱] 3 +=</span></li>
+						<li><span class="skill">唾</span><span class="effect">物理攻撃 50% 物理攻撃 50% 自[HP] 自[ATK] 2 * -=</span></li>
+						<li><span class="skill">電撃</span><span class="effect">3 ターン以上 3 MP消費 2 回 魔法攻撃</span></li>
+						<li><span class="skill">夕景</span><span class="effect">6 ターン以上 20 MP消費 場[最大ターン] 1 +=</span></li>
+						<li><span class="skill">ルーラー</span><span class="effect">:互いのステータス合計値を40にする :勝利条件:無条件</span></li>
+						<li><span class="skill">ぜろ</span><span class="effect">6 ターン以上 :すべての予言効果を即座に発動する</span></li>
+						<li><span class="skill">メテオ</span><span class="effect">4 予言 40 MP消費 1999 攻撃 自[星] 1 +=</span></li>
+						<li><span class="skill">『Deep,Deep,Deep!』</span><span class="effect">:自身の殆どのステータスを恒常的に[深度]に変換 :勝利条件:戦闘終了時に[深度]1000以上</span></li>
+					</ul>
+				</section>
+				<section>
+					<h3 class="religion bb">Bijou-Biotop</h3>
+					<p><span class="religion bb">BB</span>。悲観的。</p>
+					<h4>スキル</h4>
+					<ul>
+						<li><span class="skill">スラッシュ</span><span class="effect">物理攻撃</span></li>
+						<li><span class="skill">アーケトロン</span><span class="effect">5 MP消費 2 回 魔法攻撃</span></li>
+						<li><span class="skill">ラハティエラ</span><span class="effect">15 MP消費 3 回 魔法攻撃</span></li>
+						<li><span class="skill">カウンター</span><span class="effect">:反応 50% 物理攻撃</span></li>
+						<li><span class="skill">アブソリュート</span><span class="effect">:自身の全ステータス半減 自[分身] 1 +=</span></li>
+						<li><span class="skill">ィズ</span><span class="effect">6 ターン以上 自[MP] ** 2 攻撃 自[MP] 0 =</span></li>
+						<li><span class="skill">『真剣勝負』</span><span class="effect">:勝利条件:戦闘終了時に相手の[HP]が0以下</span></li>
+						<li><span class="skill">『地獄門』</span><span class="effect">5 ターン以上 10% :相手を戦闘から追放</span></li>
+						<li><span class="skill">『永久の夢』</span><span class="effect">6 ターン以上 :お互いのステータスを固定</span></li>
+					</ul>
+				</section>
+				<p>
+					スキルは盛大に開発中であり、全ての情報は実際と異なる可能性があります。<br>
+					各レリジョンで選択可能なスキル数は、現在記載しているものの5倍くらいを目指しています。
+				</p>
+			</article>
+			<article>
+				<h3>ステータス</h3>
+				<p>
+					基本的に、ステータスそのものに効果はありません。<br>
+					システム上、ステータスはスキルによって参照される単なる数値です。<br>
+					ですが、一部のステータスは例外的に特殊な効果を持っています。以下はその一例だったり、一例に見えてそうではないものです。
+				</p>
+				<ul>
+					<li>[ATK][攻撃][STR][筋力]……同じものとして扱われます。同じ値が複数ある場合、多分上に書いたステータスが優先されると思います。</li>
+					<li>[DEF][防御][DEF][体力]……同じものとして扱われます。</li>
+					<li>[MAG][魔力][INT][知力]……同じものとして扱われます。</li>
+					<li>[MND][精神][REG][抵抗]……同じものとして扱われます。</li>
+					<li>[HIT][命中][DEX][器用]……同じものとして扱われます。</li>
+					<li>[SPD][速さ][AGI][速度]……同じものとして扱われます。</li>
+					<li>[毒][猛毒][火傷][凍傷]……行動後にこの値と同じだけ[HP]にダメージを受けます。複数ある場合はすべて適用されます。</li>
+					<li>[火精霊][水精霊][風精霊][光精霊]……行動後に各精霊がきまぐれに追加行動します。何をするかは精霊ごとに異なります。</li>
+					<li>[詠唱]……MP消費量がこの値だけ減少します。</li>
+					<li>[勝利]……いろんなタイミングで増加します。戦闘終了時にリセットされず、永続的に残ります。</li>
+					<li>[優勝]……おめでたいです。戦闘終了時にリセットされず、永続的に残ります。</li>
+					<li>[HP]……0になっても特に何も起こりません。特殊な効果はありません。</li>
+				</ul>
+			</article>
+		</main>
+		<dialog id="help"></dialog>
+	</body>
+</html>

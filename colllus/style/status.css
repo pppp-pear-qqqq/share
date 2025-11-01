@@ -1,0 +1,15 @@
+span.status {
+	transition: color 0.2s;
+
+	&:hover {
+		color: var(--accent-color);
+	}
+
+	&::before {
+		content: " [";
+	}
+
+	&::after {
+		content: "] ";
+	}
+}

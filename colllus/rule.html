@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
+		<title>かられす／れぐるす</title>
+		<meta name="description" content="">
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="かられす／れぐるす">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:site" content="@yeet_1tp">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
+		<link rel="stylesheet" href="style/common.css">
+		<link rel="stylesheet" href="style/view_transition.css">
+		<link rel="stylesheet" href="style/help.css">
+		<link rel="stylesheet" href="style/header.css">
+		<link rel="stylesheet" href="style/info.css">
+		<link rel="stylesheet" href="style/status.css">
+		<script>document.documentElement.dataset.theme = localStorage.getItem('colllus/theme') ?? 'light'</script>
+		<script src="script/custom_elem.js"></script>
+		<script src="script/common.js" defer></script>
+		<script src="script/status.js" defer></script>
+	</head>
+	<body>
+		<header>
+			<hamburger-menu></hamburger-menu>
+			<menu>
+				<li><a href="index.html" title="トップページ"><i class="ri-planet-line"></i>トップページ</a></li>
+				<li><a href="rule.html" title="ルール"><i class="ri-book-2-line"></i>ルール</a></li>
+				<li><a href="data.html" title="データ"><i class="ri-palette-line"></i>データ</a></li>
+				<li><a href="info.html" title="お知らせ"><i class="ri-news-line"></i>お知らせ</a></li>
+				<li class="partition"></li>
+				<li class="icons">
+					<i class="ri-sun-line" title="ライトテーマ" role="button" data-theme="light"></i>
+					<i class="ri-moon-line" title="ダークテーマ" role="button" data-theme="dark"></i>
+				</li>
+				<li role="none">2025.12 - 2026.01</li>
+			</menu>
+		</header>
+		<main class="scroll y">
+			<article>
+				<h3>かられす／れぐるす</h3>
+				<p>
+					色のない世界で戦いごっこをするゲームです。<br>
+					この世界であなたは何にでもなることができますし、なんだってすることができます。
+				</p>
+			</article>
+			<article>
+				<h3>遊びかた</h3>
+				<ol>
+					<li>名前と画像を用意して、自身のキャラクターを登録する</li>
+					<li>3個のレリジョンの中からひとつ選んで所属する</li>
+					<li>6種類のステータスと、6個のスキルを決定する</li>
+					<li>自動的に決められた相手との戦闘を眺める</li>
+				</ol>
+				<section>
+					<h4>注意</h4>
+					<ul>
+						<li>名前は後から変更できません。命というほどでもないですが、大事なものなので、しっかり考えてください。</li>
+						<li>所属レリジョン、ステータス、スキルは確定後変更できません（それ以外は変更できます）。</li>
+						<li>戦う相手もまた誰かのキャラクターであり、勝ったり負けたりする可能性があります。</li>
+						<li>不思議なことや理不尽なことがいくらでも、いくらでも起こる可能性があります。</li>
+						<li>ゲームバランスのことは一切考えていないので、そのつもりでいてください。</li>
+						<li>このゲームはポレンではありませんが、その影響を多分に受けています。</li>
+						<li>チャットとかはありません。</li>
+						<li>すべての責任は開催者(<a target="_blank" href="https://x.com/yeet_1tp">@yeet_1tp</a>)が負うので、何か嫌なことがあればここに悪口を言ってください。</li>
+						<li>これらは利用規約ではありません。なので了承していなくてもこのゲームを遊ぶことができます。</li>
+					</ul>
+				</section>
+			</article>
+			<article>
+				<h3>ルール</h3>
+				<p>
+					登録したキャラクター同士で、1vs1のトーナメント戦を行います。<br>
+					勝ち抜けばすごいです。それ以上のことは特にありません。
+				</p>
+				<p>
+					戦闘はターン制です。基本的に左側のキャラクターから順番に行動します。<br>
+					6ターン目の終了時点で同時に戦闘も終了し、お互いの健闘を称えあって、そのあと良い感じに勝敗を決定します。<br>
+					勝ってそうな方が勝ちです。
+				</p>
+				<section>
+					<h4>ステータス</h4>
+					<p>
+						キャラクターは最初に<u>6種類</u>のステータスを持ちます。<br>
+						[HP][MP][ATK][DEF][MAG][MND][HIT][SPD]……8種類ありますが、これは数え間違いではありません。<br>
+						これら8種類、あるいはそれ以外の適当な文字列から6種類を選択して、それをキャラクターのステータスとします。<br>
+						ステータスはそれぞれ値を持ちます。[HP]+20、[ATK]+20といったように。この値は自由に決定することができます。<br>
+					</p>
+					<h4>スキル</h4>
+					<p>
+						またキャラクターは<u>6個</u>のスキルも持っています。<br>
+						1ターン目に使用するスキル、2ターン目に使用するスキル……といった具合に決定していきます。<br>
+						中には特定のターン以降にしか使えないような強力なスキルもあります。かっこいいです。<br>
+						選択できるスキルは、所属するレリジョンによって異なります。
+					</p>
+					<p>
+						ステータスは戦闘中、スキルなどの効果によって増減したりします。<br>
+						元々[DEF]のステータスを持っていないキャラクターが[DEF]を減らす攻撃を受けた場合などは、もともと0だったものとして処理を行います。<br>
+						このように、種類ごと増える場合もあります。<br>
+						変動したステータスは、基本的に戦闘終了と同時にリセットされます。
+					</p>
+				</section>
+				<section>
+					<h4>ステータス詳細</h4>
+					<p>ステータスの中には特殊な効果を持つものがあります。以下はその一例です。</p>
+					<ul>
+						<li>[SPD]... ターン中、この値が早い方から先に行動します。（回避とかとは関係ありません）</li>
+						<li>[毒]... ターンの終了時、この値だけ[HP]にダメージを受けます。</li>
+						<li>[勝利]... 戦闘終了時、勝ってそうなら[勝利]を1獲得します。このステータスは戦闘終了時にリセットされません。</li>
+					</ul>
+					<p>思いついたら追記します。</p>
+					<h4>スキル表記</h4>
+					<p>スキルの中には複雑な処理をキーワード化しているものがあります。以下はその一例です。</p>
+					<ul>
+						<li>「MP消費(n)」 自身の[MP]からnを引きます。もし[MP]が0未満になりそうなら、スキルは発動しなかったものとします。</li>
+						<li>「物理攻撃」 自分の[ATK]から相手の[DEF]を引いたぶんを、相手の[HP]にダメージとして与えます。</li>
+						<li>「魔法攻撃」 自分の[MAG]から相手の[MND]を引いたぶんを、相手の[HP]にダメージとして与えます。</li>
+						<li>「勝利条件」 記載されている条件を達成したとき、[勝利]を1獲得します。</li>
+					</ul>
+					<p>気が向いたら追記します。</p>
+				</section>
+			</article>
+			<article id="tos">
+				<h3>利用規約</h3>
+				<p>一応一回くらいは目を通しておいてください。</p>
+				<dl>
+					<dt>自身に権利のある、または利用許諾を得た文章・画像・その他リソースのみを使用してください。</dt>
+					<dd>歌詞とかは基本ダメです。（このサイトがJASRACに許諾を得ていないため）</dd>
+					<dt>NSFW表現を行わないでください。</dt>
+					<dd>
+						Not Safe For Work。職場でも学校でもエッチな恰好をして周囲を怖がらせてはいけません。R18-Gも該当します。<br>
+						参考: <a target="_blank" href="https://support.misskey.io/hc/ja/articles/6657417016463-NSFW%E3%83%95%E3%83%A9%E3%82%B0-%E3%82%BB%E3%83%B3%E3%82%B7%E3%83%86%E3%82%A3%E3%83%96%E3%83%95%E3%83%A9%E3%82%B0-%E3%81%8C%E5%BF%85%E8%A6%81%E3%81%AA%E5%9F%BA%E6%BA%96%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">NSFWフラグ（センシティブフラグ）が必要な基準について(Misskey.io サポート)</a>
+					</dd>
+					<dt>その他サーバー側の規約に従ってください。</dt>
+					<dd>
+						参考: <a target="_blank" href="https://vps.xserver.ne.jp/rule/rule.php#terms-vps">XServer VPS 利用規約</a><br>
+						ユーザーに気を付けてほしいのは第20条 禁止事項あたりです。あと一応33条も。あなたが仮にそうであっても言わないようにしてください。
+					</dd>
+					<dt>規約は告知なしで変更される場合があります。</dt>
+					<dt>サイトに登録した段階でこれらの規約に了承したものと見做します。</dt>
+				</dl>
+				<p>
+					上記に違反した方を見つけた場合、何かしらの対応を行います。<br>
+					行いますが、特に報告とかは受け付けていないので報告してこないでください。
+				</p>
+			</article>
+			<article>
+				<h3>画像規約</h3>
+				<p>
+					プロフィール画像を設定できます。サイズは横4:縦3の比率でお願いします（表示サイズは512x384pxです）。<br>
+					アップローダーは存在しないため、各自でアップローダーサービスを利用するなどして適切に用意してください。<br>
+					<a target="_blank" href="https://rabbithutch.site/usagoya/">うさごや</a>または<a target="_blank" href="https://game.428.st">The Clover Garden</a>がおすすめです。
+				</p>
+				<p>
+					改行区切りで複数の画像URLを記入することで、ランダムな画像を使用できます。<br>
+					プロフィールアクセス時にランダムに表示される他、戦闘ログの画像はこれらの中からランダムに1枚が選択され使用されます。<br>
+					基本的にはひとつ用意すれば十分です。
+				</p>
+				<p>
+					画像は自身に権利のある、あるいは使用許諾を得た画像を使用してください。必ずしもイラストである必要はありません。
+				</p>
+			</article>
+		</main>
+		<dialog id="help"></dialog>
+	</body>
+</html>

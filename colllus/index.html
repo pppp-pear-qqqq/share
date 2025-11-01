@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
+		<title>かられす／れぐるす</title>
+		<meta name="description" content="">
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="かられす／れぐるす">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:site" content="@yeet_1tp">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
+		<link rel="stylesheet" href="style/common.css">
+		<link rel="stylesheet" href="style/view_transition.css">
+		<link rel="stylesheet" href="style/help.css">
+		<link rel="stylesheet" href="style/header.css">
+		<link rel="stylesheet" href="style/info.css">
+		<link rel="stylesheet" href="style/title.css">
+		<script>document.documentElement.dataset.theme = localStorage.getItem('colllus/theme') ?? 'light'</script>
+		<script src="script/custom_elem.js"></script>
+		<script src="script/common.js" defer></script>
+	</head>
+	<body>
+		<header>
+			<hamburger-menu></hamburger-menu>
+			<menu>
+				<li><a href="index.html" title="トップページ"><i class="ri-planet-line"></i>トップページ</a></li>
+				<li><a href="rule.html" title="ルール"><i class="ri-book-2-line"></i>ルール</a></li>
+				<li><a href="data.html" title="データ"><i class="ri-palette-line"></i>データ</a></li>
+				<li><a href="info.html" title="お知らせ"><i class="ri-news-line"></i>お知らせ</a></li>
+				<li class="partition"></li>
+				<li class="icons">
+					<i class="ri-sun-line" title="ライトテーマ" role="button" data-theme="light"></i>
+					<i class="ri-moon-line" title="ダークテーマ" role="button" data-theme="dark"></i>
+				</li>
+				<li role="none">2025.12 - 2026.01</li>
+			</menu>
+		</header>
+		<main class="scroll y">
+			<h1>
+				かられす
+				<svg id="meteor" viewBox="0 0 110 110" preserveAspectRatio="none">
+					<path d="M 107 3 l -90 90" fill="none" class="p0"></path>
+					<path d="M 3 101 l 12 0 M 9 107 l 0 -12" fill="none" class="p1"></path>
+				</svg>
+				れぐるす
+			</h1>
+			<style>
+				h2 {
+					margin-top: 1lh;
+				}
+
+				h2:first-of-type {
+					margin-top: 20dvh;
+				}
+
+				h2::before {
+					flex-grow: 1;
+				}
+			</style>
+			<h2><a href="rule.html" title="ルール"><i class="ri-book-2-line"></i>ルール</a></h2>
+			<h2><a href="data.html" title="データ"><i class="ri-palette-line"></i>データ</a></h2>
+			<h2><a href="info.html" title="お知らせ"><i class="ri-news-line"></i>お知らせ</a></h2>
+		</main>
+		<dialog id="help"></dialog>
+	</body>
+</html>

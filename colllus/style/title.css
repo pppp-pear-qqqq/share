@@ -1,0 +1,63 @@
+h1 {
+	margin: 40px 0;
+	display: flex;
+	justify-content: center;
+	color: var(--neutral-color);
+	font-size: calc(100cqw / 20);
+	font-weight: 200;
+	user-select: none;
+}
+
+svg#meteor {
+	width: 1.1lh;
+	height: 1.1lh;
+	margin: 0 0 -0.1lh -0.1lh;
+
+	>path {
+		stroke-width: 3px;
+		stroke-linecap: round;
+	}
+
+	>path:not([stroke]) {
+		stroke: currentColor;
+	}
+
+	>.p0 {
+		stroke-dasharray: 140;
+		stroke-dashoffset: 140;
+		animation: meteor-line 0.1s 0.5s ease-out forwards;
+	}
+
+	>.p1 {
+		opacity: 0;
+		transform-box: fill-box;
+		transform-origin: center;
+		animation: meteor-show 0.2s 0.61s ease-out forwards, meteor-rotate 20.0s linear infinite reverse;
+	}
+}
+
+@keyframes meteor-line {
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes meteor-show {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes meteor-rotate {
+	from {
+		rotate: 0;
+	}
+
+	to {
+		rotate: 360deg;
+	}
+}
