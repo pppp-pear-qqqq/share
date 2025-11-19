@@ -1,7 +1,6 @@
 h1 {
 	margin: 40px 0;
-	display: flex;
-	justify-content: center;
+	text-align: center;
 	color: var(--neutral-color);
 	font-size: calc(100cqw / 20);
 	font-weight: 200;
@@ -11,7 +10,7 @@ h1 {
 svg#meteor {
 	width: 1.1lh;
 	height: 1.1lh;
-	margin: 0 0 -0.1lh -0.1lh;
+	margin: 0 0 -0.35lh -0.1lh;
 
 	>path {
 		stroke-width: 3px;
