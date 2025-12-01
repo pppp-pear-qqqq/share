@@ -1,1 +1,248 @@
-テスト
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
+		<style>
+			html,
+			button,
+			input,
+			textarea,
+			select {
+				font-family: "Zen Maru Gothic", sans-serif;
+				font-weight: 400;
+				font-style: normal;
+				font-optical-sizing: auto;
+				line-height: 1.5;
+			}
+
+			*:not(input, textarea, select) {
+				margin: 0;
+				padding: 0;
+			}
+
+			[role="button"] {
+				font-size: 1rlh;
+				line-height: 1;
+				width: 1lh;
+				text-align: center;
+
+				&:hover {
+					color: #fd5f37;
+				}
+
+				&:active {
+					filter: brightness(0.8);
+				}
+			}
+
+			menu {
+				list-style-type: none;
+				display: flex;
+				align-items: center;
+
+				&:has(>.liner) {
+					flex-wrap: wrap;
+
+					>.liner {
+						width: 100%;
+					}
+				}
+			}
+
+			.partition {
+				flex: 1 1 0;
+			}
+
+			body {
+				height: 100dvh;
+				margin: 0;
+				padding: 1vw;
+				box-sizing: border-box;
+				display: flex;
+				gap: 1vw;
+
+				>* {
+					border-radius: 6px;
+					box-shadow: 0 0 2px #000;
+					overflow: hidden;
+				}
+			}
+
+			#field {
+				flex-grow: 1;
+			}
+
+			#log {
+				padding: 2px 0.5vw;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rlh;
+				overflow-y: auto;
+				scrollbar-width: thin;
+				scrollbar-gutter: stable;
+
+				&::before {
+					content: "";
+					flex-grow: 1;
+				}
+
+				>* {
+					flex-shrink: 0;
+					width: 30rem;
+				}
+
+				>p {
+					align-self: center;
+				}
+
+				>textarea {
+					min-height: calc(attr(rows) * 1lh);
+					resize: vertical;
+					font-size: 0.99rem;
+				}
+			}
+
+			#pallete {
+				width: 10rem;
+				padding: 0.5vw;
+				display: flex;
+				flex-direction: column;
+
+				>div,
+				>textarea {
+					flex-grow: 1;
+				}
+
+				>textarea {
+					display: block;
+					resize: none;
+				}
+
+				&.edit>div {
+					display: none;
+				}
+
+				&:not(.edit)>textarea {
+					display: none;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<aside id="field"></aside>
+		<main id="log">
+			<textarea name="log" rows="3"></textarea>
+			<script type="module">
+				const log = document.getElementById('log');
+				const require_shift = document.querySelector('[name="require_shift"]');
+				log.querySelector('[name="log"]').addEventListener('keydown', function (ev) {
+					if (ev.key === 'Enter' && ev.shiftKey === require_shift.checked) {
+						ev.preventDefault();
+						const e = log.insertBefore(document.createElement('p'), this);
+						e.className = 'log';
+						e.contentEditable = 'true';
+						e.innerHTML = format_log(this.value);
+						this.value = '';
+					}
+				});
+				function format_log(text) {
+					return text
+						.replace(/(\d)d(\d)/g, (_, count, side) => {
+							let sum = 0;
+							const results = [];
+							for (let i = 0; i < Number(count); ++i) {
+								const result = Math.ceil(Math.random() * Number(side));
+								sum += result;
+								results.push(result);
+							};
+							return `${count}d${side} <small>-> [${results.join(',')}] -></small> <b>${sum}</b>`;
+						})
+						.replace(/\*\*(.+)\*\*/g, '<b>$1</b>')
+						.replace(/__(.+)__/g, '<u>$1</u>')
+						.replace(/\r\n|\r|\n/g, '<br>')
+				}
+			</script>
+		</main>
+		<aside id="pallete">
+			<div></div>
+			<textarea></textarea>
+			<menu>
+				<li title="ライトテーマ" role="button" data-theme="light"><i class="ri-sun-line"></i></li>
+				<li title="ダークテーマ" role="button" data-theme="dark"><i class="ri-moon-line"></i></li>
+				<li class="partition"></li>
+				<li title="ログ保存" role="button" class="save-log"><i class="ri-save-line"></i></li>
+				<li title="パレット保存" role="button"><i class="ri-slash-commands-2"></i></li>
+				<li class="liner"><label>Shift要求<input type="checkbox" name="require_shift" checked></label></li>
+			</menu>
+			<script type="module">
+				const pallete = document.getElementById('pallete');
+				const main = pallete.querySelector('div');
+				const edit = pallete.querySelector('textarea');
+				main.addEventListener('click', ev => {
+					if (ev.ctrlKey) {
+						pallete.classList.add('edit');
+						edit.focus();
+					}
+				});
+				edit.addEventListener('blur', ev => {
+					parse_pallete(edit.value);
+					pallete.classList.remove('edit');
+				});
+				const e_log = document.getElementById('log');
+				function parse_pallete(text) {
+					main.replaceChildren();
+					text.split(/[\n\r]+/).forEach(line => {
+						if (line === '') return;
+						is_some_and(line.match(/^(\d+)d(\d+)$/), caps => {
+							const e = main.appendChild(document.createElement('button'));
+							e.type = 'button';
+							e.innerText = `${caps[1]}d${caps[2]}`;
+							e.addEventListener('click', () => roll_dice(Number(caps[1]), Number(caps[2])));
+						});
+					})
+				}
+				function is_some_and(value, fn) {
+					if (value) return fn(value);
+					return null;
+				}
+				function roll_dice(count, side) {
+					let sum = 0;
+					const results = [];
+					for (let i = 0; i < Number(count); ++i) {
+						const result = Math.ceil(Math.random() * Number(side));
+						sum += result;
+						results.push(result);
+					};
+					const e = e_log.insertBefore(document.createElement('p'), e_log.querySelector('textarea'));
+					e.className = 'log pallete';
+					e.innerHTML = `${count}d${side} <small>-> [${results.join(',')}] -></small> <b>${sum}</b>`;
+				}
+			</script>
+			<script type="module">
+				document.querySelectorAll('[role="button"][data-theme]').forEach(e => e.addEventListener('click', function () {
+					document.documentElement.dataset.theme = this.dataset.theme;
+				}));
+				document.querySelectorAll('[role="button"].save-log').forEach(e => e.addEventListener('click', function () {
+					const out = [];
+					for (const e of document.getElementById('log').children) if (e instanceof HTMLParagraphElement) out.push(e.innerHTML);
+					if (out.length === 0) {
+						alert('保存するログがありません');
+						return;
+					}
+					const url = URL.createObjectURL(new Blob([JSON.stringify(out)], { type: 'application/json' }));
+					const link = document.createElement('a');
+					link.href = url;
+					link.download = 'log.json';
+					link.click();
+					URL.revokeObjectURL(url);
+				}));
+			</script>
+		</aside>
+	</body>
+</html>
