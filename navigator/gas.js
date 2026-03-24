@@ -1,7 +1,4 @@
-const ContentService: any = 0;
-const SpreadsheetApp: any = 0;
-
-function doGet(e: any) {
+function doGet(e) {
 	// リクエストのクエリパラメータから 'key' を取得 (?key=検索文字)
 	const key = e.parameter.key;
 
@@ -30,7 +27,7 @@ function doGet(e: any) {
 	return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
 }
 
-function doPost(e: any) {
+function doPost(e) {
 	// 引数を取得
 	let key, value;
 	if (e.postData && e.postData.type === "application/json") {
