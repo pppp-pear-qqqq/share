@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="robots" content="none">
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
+		<title>ナビゲーター登録</title>
+		<meta property="og:title" content="ナビゲーター登録">
+		<meta name="description" content="汎用ナビゲーターシステムに設定を登録するためのサイトです">
+		<meta property="og:type" content="website">
+		<meta name="twitter:card" content="summary">
+		<meta property="og:site_name" content="ナビゲーター登録">
+		<meta name="twitter:site" content="@yeet_1tp">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
+		<link rel="stylesheet" href="register/style.css">
+		<script>document.documentElement.dataset.theme = localStorage.getItem('nav/theme') ?? 'light'</script>
+	</head>
+	<body>
+		<header></header>
+		<main>
+			<form action="" method="post">
+				<label hidden>キー<input type="text" name="key"></label>
+				<table>
+					<template>
+						<tr>
+							<td><input type="text" name="path"></td>
+							<td>
+								<select name="trigger">
+									<option value="random">ランダム</option>
+									<option value="access">アクセス時</option>
+									<option value="access-first">初回アクセス時</option>
+								</select>
+							</td>
+							<td><textarea name="word"></textarea></td>
+						</tr>
+					</template>
+					<thead>
+						<tr>
+							<th>対象</th>
+							<th>トリガー</th>
+							<th>セリフ</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+					<tfoot>
+						<tr>
+							<td colspan="3">
+								<button type="button">+</button>
+								<button type="button">-</button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				<button type="submit">登録</button>
+			</form>
+		</main>
+		<dialog id="help"></dialog>
+	</body>
+</html>

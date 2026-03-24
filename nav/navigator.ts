@@ -225,4 +225,8 @@ class NavigatorToaster {
 			this.handle = undefined;
 		}
 	}
+
+	public set_navigator() {
+
+	}
 }
