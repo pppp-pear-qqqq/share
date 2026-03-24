@@ -51,8 +51,8 @@ function doPost(e) {
 	}
 
 	// パスワードハッシュ化
-	const raw_hash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(password));
-	const hashedPassword = raw_hash.map(function (byte) {
+	const rawHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(password));
+	const hashedPassword = rawHash.map(function (byte) {
 		return ('0' + (byte & 0xFF).toString(16)).slice(-2);
 	}).join('');
 
