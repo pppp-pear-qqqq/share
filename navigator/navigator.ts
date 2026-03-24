@@ -16,7 +16,7 @@ class ErrorApiNetwork extends Error {
 
 class NavigatorToastApp {
 	// 定数・設定
-	private readonly api = 'https://script.google.com/macros/s/AKfycbxgSjwMISfA0QyEqSB_TfQExdCoo9o3YLiwly7Csg5yczU1-Da7AFeVsFshgTRNyz274Q/exec';
+	private readonly api = 'TODO';
 	private readonly prefix = 'navigator';
 	private readonly icon_size = 48;
 	private readonly wait_min = 10000;
