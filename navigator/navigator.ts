@@ -14,17 +14,26 @@ class ErrorApiNetwork extends Error {
 	}
 }
 
-class NavigatorToastApp {
+type NavigatorToasterOptions = {
+	api: string,
+	is_subdir: boolean,
+	is_query_page: boolean,
+	auto_remove: number,
+	random_wait_min: number,
+	random_wait_max: number,
+	lifecycle: number,
+}
+
+class NavigatorToaster {
 	// 定数・設定
-	private readonly api = 'TODO';
 	private readonly prefix = 'navigator';
-	private readonly icon_size = 48;
-	private readonly wait_min = 10000;
-	private readonly wait_max = 20000;
-	private readonly lifecycle = 86400000;
+	private readonly api: string;
+	private readonly auto_remove: number;
+	private readonly random_wait_min: number;
+	private readonly random_wait_max: number;
+	private readonly lifecycle: number;
 
 	// 動的パス・キー
-	private readonly subdir: string;
 	private readonly key_path: string;
 	private readonly save_path: string;
 	private readonly access_path: string;
@@ -35,22 +44,38 @@ class NavigatorToastApp {
 	private access: Set<string> = new Set();
 	private handle?: number;
 
-	constructor() {
-		// サブディレクトリ取得
-		this.subdir = ((path) => {
-			const array = path.split('/', 2);
-			if (array.length === 1 || array[1] === '') return '';
-			else return array[1];
-		})(location.pathname);
+	constructor({ api, is_subdir, is_query_page, auto_remove = 8000, random_wait_min = 10000, random_wait_max = 20000, lifecycle = 86400000 }: NavigatorToasterOptions) {
+		// 定数反映
+		this.api = api;
+		this.auto_remove = auto_remove;
+		this.random_wait_min = random_wait_min;
+		this.random_wait_max = random_wait_max;
+		this.lifecycle = lifecycle;
 
 		// localStorageのキー設定
-		this.key_path = `${this.subdir}/${this.prefix}`;
-		this.save_path = `${this.subdir}/${this.prefix}/save`;
-		this.access_path = `${this.subdir}/${this.prefix}/access`;
+		if (is_subdir) {
+			// サブディレクトリ取得
+			const subdir = ((path) => {
+				const array = path.split('/', 2);
+				if (array.length === 1 || array[1] === '') return '';
+				else return array[1];
+			})(location.pathname);
+			this.key_path = `${subdir}/${this.prefix}`;
+			this.save_path = `${subdir}/${this.prefix}/save`;
+			this.access_path = `${subdir}/${this.prefix}/access`;
+		} else {
+			this.key_path = `${this.prefix}`;
+			this.save_path = `${this.prefix}/save`;
+			this.access_path = `${this.prefix}/access`;
+		}
 
 		// 現在パス
-		// this.current_path = location.pathname;
-		this.current_path = location.pathname + location.search;	// ソラニワはクエリ文字列で表示ページを分ける構造のため含める
+		if (is_query_page) {
+			// クエリ文字列で表示ページを分ける構造の場合
+			this.current_path = location.pathname + location.search;
+		} else {
+			this.current_path = location.pathname;
+		}
 	}
 
 	// 汎用関数
@@ -74,7 +99,7 @@ class NavigatorToastApp {
 			const key = localStorage.getItem(this.key_path);
 			if (key) {
 				// 対象が指定されている
-				const query = encodeURIComponent(location.host + '/' + this.subdir + '/' + key);
+				const query = encodeURIComponent(key);
 				let res: Response;
 				try {
 					res = await fetch(`${this.api}?key=${query}`);
@@ -141,7 +166,6 @@ class NavigatorToastApp {
 			container = document.body.appendChild(this.bake('div', e => {
 				e.id = container_id;
 			}));
-			// TODO スタイルシート読み込み等
 		}
 
 		container.appendChild(this.bake('div', e => {
@@ -149,21 +173,20 @@ class NavigatorToastApp {
 			if (icon) e.appendChild(this.bake('img', img => {
 				img.classList.add(`${this.prefix}-icon`);
 				img.src = icon;
-				img.width = this.icon_size;
-				img.height = this.icon_size;
 			}));
 			e.appendChild(this.bake('p', p => {
 				p.classList.add(`${this.prefix}-body`);
 				p.innerHTML = body;
 			}));
-			setTimeout(() => e.remove(), this.wait_min);
+			e.addEventListener('click', () => e.remove());
+			setTimeout(() => e.remove(), this.auto_remove);
 		}));
 	}
 
 	/// 自動再生の予約
 	private reserveNext = () => {
 		this.pop('random');
-		const wait = Math.random() * (this.wait_max - this.wait_min) + this.wait_min;
+		const wait = Math.random() * (this.random_wait_max - this.random_wait_min) + this.random_wait_min;
 		this.handle = window.setTimeout(this.reserveNext, wait);
 	}
 
@@ -191,7 +214,7 @@ class NavigatorToastApp {
 		}
 
 		// 初回の定期実行予約
-		const wait = Math.random() * (this.wait_max - this.wait_min) + this.wait_min;
+		const wait = Math.random() * (this.random_wait_max - this.random_wait_min) + this.random_wait_min;
 		this.handle = window.setTimeout(this.reserveNext, wait);
 	}
 
