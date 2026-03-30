@@ -160,10 +160,8 @@ class NavigatorToaster {
 	private makeToast(body: string, icon?: string) {
 		const container_id = `${this.prefix}-container`;
 		let container = document.querySelector<HTMLElement>(`body>#${container_id}`);
-		console.log(container);
 
 		if (!container) {
-			console.log('container not found, creating new one');
 			container = document.body.appendChild(this.bake('div', e => {
 				e.id = container_id;
 			}));
@@ -196,9 +194,9 @@ class NavigatorToaster {
 		try {
 			await this.load();
 		} catch (err) {
-			if (err instanceof ErrorNavigatorNotFound) console.info('ナビゲーターを読み込んでいません: ', err.message);
-			else if (err instanceof ErrorApiNetwork) console.error('ナビゲーターの取得に失敗しました: ', err.message);
-			else console.error('予期せぬエラーが発生しました: ', err);
+			if (err instanceof ErrorNavigatorNotFound) console.info('ナビゲーターを読み込んでいません\n', err.message);
+			else if (err instanceof ErrorApiNetwork) console.error('ナビゲーターの取得に失敗しました\n', err.message);
+			else console.error('予期せぬエラーが発生しました\n', err);
 			return;
 		}
 
