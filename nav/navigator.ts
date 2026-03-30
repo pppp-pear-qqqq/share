@@ -15,42 +15,45 @@ class ErrorApiNetwork extends Error {
 }
 
 type NavigatorToasterOptions = {
-	api: string,
+	api_url: string,
 	is_subdir: boolean,
 	is_query_page: boolean,
-	auto_remove: number,
-	random_wait_min: number,
-	random_wait_max: number,
-	lifecycle: number,
+	duration: number,
+	min_interval: number,
+	max_interval: number,
+	cache_ttl: number,
+	close_handler: (e: HTMLElement) => void,
 }
 
 class NavigatorToaster {
 	// 定数・設定
 	private readonly prefix = 'navigator';
-	private readonly api: string;
-	private readonly auto_remove: number;
-	private readonly random_wait_min: number;
-	private readonly random_wait_max: number;
-	private readonly lifecycle: number;
+	private readonly api_url: string;
+	private readonly duration: number;
+	private readonly min_interval: number;
+	private readonly max_interval: number;
+	private readonly cache_ttl: number;
+	private readonly close_handler: (e: HTMLElement) => void;
 
 	// 動的パス・キー
-	private readonly key_path: string;
-	private readonly save_path: string;
-	private readonly access_path: string;
+	private readonly target_key: string;
+	private readonly dict_key: string;
+	private readonly visited_key: string;
 	private readonly current_path: string;
 
 	// 状態管理
-	private navigator: Record<string, string[]> | null = null;
-	private access: Set<string> = new Set();
+	private dict: Record<string, string[]> | null = null;
+	private visited: Set<string> = new Set();
 	private handle?: number;
 
-	constructor({ api, is_subdir, is_query_page, auto_remove = 8000, random_wait_min = 10000, random_wait_max = 20000, lifecycle = 86400000 }: NavigatorToasterOptions) {
+	constructor({ api_url, is_subdir, is_query_page, duration = 8000, min_interval = 10000, max_interval = 20000, cache_ttl = 86400000, close_handler = (e) => e.remove() }: NavigatorToasterOptions) {
 		// 定数反映
-		this.api = api;
-		this.auto_remove = auto_remove;
-		this.random_wait_min = random_wait_min;
-		this.random_wait_max = random_wait_max;
-		this.lifecycle = lifecycle;
+		this.api_url = api_url;
+		this.duration = duration;
+		this.min_interval = min_interval;
+		this.max_interval = max_interval;
+		this.cache_ttl = cache_ttl;
+		this.close_handler = close_handler;
 
 		// localStorageのキー設定
 		if (is_subdir) {
@@ -60,13 +63,13 @@ class NavigatorToaster {
 				if (array.length === 1 || array[1] === '') return '';
 				else return array[1];
 			})(location.pathname);
-			this.key_path = `${subdir}/${this.prefix}`;
-			this.save_path = `${subdir}/${this.prefix}/save`;
-			this.access_path = `${subdir}/${this.prefix}/access`;
+			this.target_key = `${subdir}/${this.prefix}`;
+			this.dict_key = `${subdir}/${this.prefix}/save`;
+			this.visited_key = `${subdir}/${this.prefix}/access`;
 		} else {
-			this.key_path = `${this.prefix}`;
-			this.save_path = `${this.prefix}/save`;
-			this.access_path = `${this.prefix}/access`;
+			this.target_key = `${this.prefix}`;
+			this.dict_key = `${this.prefix}/save`;
+			this.visited_key = `${this.prefix}/access`;
 		}
 
 		// 現在パス
@@ -87,22 +90,22 @@ class NavigatorToaster {
 
 	/// データ読み込み
 	private async load() {
-		const load = localStorage.getItem(this.save_path);
+		const load = localStorage.getItem(this.dict_key);
 		if (load) {
-			const { timestamp, data }: { timestamp: number, data: Record<string, string[]> } = JSON.parse(load);
+			const { timestamp, dict }: { timestamp: number, dict: Record<string, string[]> } = JSON.parse(load);
 			const now = Date.now();
-			if (timestamp + this.lifecycle > now) this.navigator = data;
+			if (timestamp + this.cache_ttl > now) this.dict = dict;
 		}
 
-		if (this.navigator === null) {
+		if (this.dict === null) {
 			// 読み込み失敗（期限切れ、または保存されていない）
-			const key = localStorage.getItem(this.key_path);
+			const key = localStorage.getItem(this.target_key);
 			if (key) {
 				// 対象が指定されている
 				const query = encodeURIComponent(key);
 				let res: Response;
 				try {
-					res = await fetch(`${this.api}?key=${query}`);
+					res = await fetch(`${this.api_url}?key=${query}`);
 				} catch (err) {
 					throw new ErrorApiNetwork('ネットワークエラーが発生しました');
 				}
@@ -110,11 +113,11 @@ class NavigatorToaster {
 					if (res.headers.get('Content-Type')?.includes('application/json')) {
 						// 成功
 						try {
-							this.navigator = await res.json();
+							this.dict = await res.json();
 						} catch (err) {
 							throw new ErrorNavigatorNotFound('対象のナビゲーター設定形式が異常です');
 						}
-						localStorage.setItem(this.save_path, JSON.stringify({ timestamp: Date.now(), data: this.navigator }));
+						localStorage.setItem(this.dict_key, JSON.stringify({ timestamp: Date.now(), dict: this.dict }));
 					} else {
 						// 指定したものが見つからなかった
 						throw new ErrorNavigatorNotFound(await res.text());
@@ -126,11 +129,11 @@ class NavigatorToaster {
 			}
 		}
 
-		if (this.navigator !== null) {
+		if (this.dict !== null) {
 			// ここまでで読み込みが成功している
-			const load = localStorage.getItem(this.access_path);
+			const load = localStorage.getItem(this.visited_key);
 			// SetオブジェクトはそのままJSON化できないため配列を経由する
-			this.access = load ? new Set(JSON.parse(load)) : new Set();
+			this.visited = load ? new Set(JSON.parse(load)) : new Set();
 		} else {
 			throw new ErrorNavigatorNotFound('ナビゲーターが指定されていません');
 		}
@@ -138,9 +141,9 @@ class NavigatorToaster {
 
 	/// トースト発火
 	private pop(trigger: 'access-first' | 'access' | 'random') {
-		if (this.navigator === null) return;
+		if (this.dict === null) return;
 
-		const words = this.navigator[`${this.current_path}?${trigger}`];
+		const words = this.dict[`${this.current_path}?${trigger}`];
 		if (words) {
 			const word = words[Math.floor(Math.random() * words.length)];
 			const pos = word.indexOf('|');
@@ -152,12 +155,12 @@ class NavigatorToaster {
 			} else {
 				body = word.trim();
 			}
-			this.makeToast(body, icon);
+			this.make_toast(body, icon);
 		}
 	}
 
 	/// トーストUI生成
-	private makeToast(body: string, icon?: string) {
+	private make_toast(body: string, icon?: string) {
 		const container_id = `${this.prefix}-container`;
 		let container = document.querySelector<HTMLElement>(`body>#${container_id}`);
 
@@ -177,16 +180,16 @@ class NavigatorToaster {
 				p.classList.add(`${this.prefix}-body`);
 				p.innerHTML = body;
 			}));
-			e.addEventListener('click', () => e.remove());
-			setTimeout(() => e.remove(), this.auto_remove);
+			e.addEventListener('click', () => this.close_handler(e));
+			if (this.duration > 0) setTimeout(() => this.close_handler(e), this.duration);
 		}));
 	}
 
 	/// 自動再生の予約
-	private reserveNext = () => {
+	private reserve_next = () => {
 		this.pop('random');
-		const wait = Math.random() * (this.random_wait_max - this.random_wait_min) + this.random_wait_min;
-		this.handle = window.setTimeout(this.reserveNext, wait);
+		const wait = Math.random() * (this.max_interval - this.min_interval) + this.min_interval;
+		this.handle = window.setTimeout(this.reserve_next, wait);
 	}
 
 	/** 起動 */
@@ -201,20 +204,20 @@ class NavigatorToaster {
 		}
 
 		// アクセス時
-		if (!this.access.has(this.current_path)) {
+		if (!this.visited.has(this.current_path)) {
 			// 初アクセス
 			this.pop('access-first');
-			this.access.add(this.current_path);
+			this.visited.add(this.current_path);
 			// Setを配列に変換してから保存する
-			localStorage.setItem(this.access_path, JSON.stringify(Array.from(this.access)));
+			localStorage.setItem(this.visited_key, JSON.stringify(Array.from(this.visited)));
 		} else {
 			// 2回目以降
 			this.pop('access');
 		}
 
 		// 初回の定期実行予約
-		const wait = Math.random() * (this.random_wait_max - this.random_wait_min) + this.random_wait_min;
-		this.handle = window.setTimeout(this.reserveNext, wait);
+		const wait = Math.random() * (this.max_interval - this.min_interval) + this.min_interval;
+		this.handle = window.setTimeout(this.reserve_next, wait);
 	}
 
 	/** 自動再生（ランダムトースト）を停止する */
@@ -223,9 +226,5 @@ class NavigatorToaster {
 			clearTimeout(this.handle);
 			this.handle = undefined;
 		}
-	}
-
-	public set_navigator() {
-
 	}
 }
