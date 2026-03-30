@@ -40,7 +40,7 @@ class NavigatorToaster {
 	private readonly current_path: string;
 
 	// 状態管理
-	private navigator: Record<string, string> | null = null;
+	private navigator: Record<string, string[]> | null = null;
 	private access: Set<string> = new Set();
 	private handle?: number;
 
@@ -89,7 +89,7 @@ class NavigatorToaster {
 	private async load() {
 		const load = localStorage.getItem(this.save_path);
 		if (load) {
-			const { timestamp, data }: { timestamp: number, data: Record<string, string> } = JSON.parse(load);
+			const { timestamp, data }: { timestamp: number, data: Record<string, string[]> } = JSON.parse(load);
 			const now = Date.now();
 			if (timestamp + this.lifecycle > now) this.navigator = data;
 		}
@@ -142,8 +142,7 @@ class NavigatorToaster {
 
 		const words = this.navigator[`${this.current_path}?${trigger}`];
 		if (words) {
-			const array = words.split('\n');
-			const word = array[Math.floor(Math.random() * array.length)];
+			const word = words[Math.floor(Math.random() * words.length)];
 			const pos = word.indexOf('|');
 			let icon, body;
 
@@ -161,8 +160,10 @@ class NavigatorToaster {
 	private makeToast(body: string, icon?: string) {
 		const container_id = `${this.prefix}-container`;
 		let container = document.querySelector<HTMLElement>(`body>#${container_id}`);
+		console.log(container);
 
 		if (!container) {
+			console.log('container not found, creating new one');
 			container = document.body.appendChild(this.bake('div', e => {
 				e.id = container_id;
 			}));

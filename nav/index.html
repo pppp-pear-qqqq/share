@@ -60,13 +60,18 @@
 				<button type="submit">登録</button>
 			</form>
 		</main>
+		<form id="navigator-setting">
+			<label>キー<input type="text" name="key"></label>
+			<button type="submit">設定</button>
+		</form>
+		<script>
+			document.getElementById('navigator-setting').addEventListener('submit', (e) => {
+				e.preventDefault();
+				const key = e.target.key.value;
+				localStorage.setItem('navigator', key);
+				location.reload();
+			});
+		</script>
 		<dialog id="help"></dialog>
-		<link rel="stylesheet" href="soraniwa.css">
-		<div id="navigator-container">
-			<div class="navigator-toast">
-				<img class="navigator-icon" src="https://rabbithutch.site/usagoya/picture.php?user=pppppear&file=qo_i01.webp">
-				<p class="navigator-body">「こんにちは、こんにちは！」</p>
-			</div>
-		</div>
 	</body>
 </html>
