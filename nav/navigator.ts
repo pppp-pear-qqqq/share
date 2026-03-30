@@ -94,7 +94,7 @@ class NavigatorToaster {
 			if (timestamp + this.lifecycle > now) this.navigator = data;
 		}
 
-		if (!this.navigator) {
+		if (this.navigator === null) {
 			// 読み込み失敗（期限切れ、または保存されていない）
 			const key = localStorage.getItem(this.key_path);
 			if (key) {
@@ -126,7 +126,7 @@ class NavigatorToaster {
 			}
 		}
 
-		if (this.navigator) {
+		if (this.navigator !== null) {
 			// ここまでで読み込みが成功している
 			const load = localStorage.getItem(this.access_path);
 			// SetオブジェクトはそのままJSON化できないため配列を経由する
@@ -138,7 +138,7 @@ class NavigatorToaster {
 
 	/// トースト発火
 	private pop(trigger: 'access-first' | 'access' | 'random') {
-		if (!this.navigator) return;
+		if (this.navigator === null) return;
 
 		const words = this.navigator[`${this.current_path}?${trigger}`];
 		if (words) {
