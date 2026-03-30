@@ -18,13 +18,15 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.min.css">
 		<link rel="stylesheet" href="register/style.css">
 		<script>document.documentElement.dataset.theme = localStorage.getItem('nav/theme') ?? 'light'</script>
+		<script type="module" src="register/script.js"></script>
 	</head>
 	<body>
 		<header></header>
 		<main>
-			<form action="https://script.google.com/macros/s/AKfycbznftumO8l0a4w3xj1xAb0jN9cIQGzfN2JmirTnoaDEostWukJ7EP5t0IUAF10h4Zbv/exec" method="post">
-				<label hidden>キー<input type="text" name="key"></label>
-				<table>
+			<form id="navigator-form" action="https://script.google.com/macros/s/AKfycbznftumO8l0a4w3xj1xAb0jN9cIQGzfN2JmirTnoaDEostWukJ7EP5t0IUAF10h4Zbv/exec" method="post">
+				<label hidden>Eno<input type="number" name="eno"></label>
+				<label>登録名<input type="text" name="name"></label>
+				<table class="words">
 					<template>
 						<tr>
 							<td><input type="text" name="path"></td>
