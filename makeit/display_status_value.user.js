@@ -24,6 +24,7 @@
             e.classList.add('status-value');
         }));
         const slider=e.querySelector('input[type="range"]');
+		slider.removeAttribute('oninput')
         value.textContent=slider.value;
         slider.addEventListener('input',()=>{
             value.textContent=slider.value;
