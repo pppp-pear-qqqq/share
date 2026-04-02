@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ステータス数値化
 // @namespace    https://pppp-pear-qqqq.github.io/share/
-// @version      0.1.0
+// @version      0.1.1
 // @updateURL    https://pppp-pear-qqqq.github.io/share/makeit/display_status_value.user.js
 // @downloadURL  https://pppp-pear-qqqq.github.io/share/makeit/display_status_value.user.js
 // @description  プロフィール編集画面でのステータスを数値化します。調整に便利。人のステータスが数値で見えるようになったりはしません。
@@ -24,7 +24,7 @@
             e.classList.add('status-value');
         }));
         const slider=e.querySelector('input[type="range"]');
-		slider.removeAttribute('oninput')
+		slider.removeAttribute('oninput');
         value.textContent=slider.value;
         slider.addEventListener('input',()=>{
             value.textContent=slider.value;
