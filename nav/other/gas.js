@@ -75,11 +75,13 @@ function doPost(e) {
 		} else {
 			return ContentService.createTextOutput("キーまたはパスワードが正しくありません").setMimeType(ContentService.MimeType.TEXT);
 		}
+		// 完了レスポンスを返す
+		return ContentService.createTextOutput("Updated").setMimeType(ContentService.MimeType.TEXT);
 	} else {
 		// 見つからなければ新規作成
 		sheet.appendRow([key, value, hashedPassword]);
+		// 完了レスポンスを返す
+		return ContentService.createTextOutput("Created").setMimeType(ContentService.MimeType.TEXT);
 	}
 
-	// 完了レスポンスを返す
-	return ContentService.createTextOutput("Ok").setMimeType(ContentService.MimeType.TEXT);
 }

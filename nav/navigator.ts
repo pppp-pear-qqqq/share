@@ -1,23 +1,11 @@
-// APIの通信自体は成功したが、対象のデータが存在しなかった（またはローカルに設定がない）場合のエラー
-class ErrorNavigatorNotFound extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = 'NavigatorNotFoundError';
-	}
-}
+import { ErrorApiNetwork, ErrorNavigatorNotFound } from './error.ts';
+import { bake } from './utils.ts';
 
-// APIサーバーが落ちている、ネットワークが切断されているなどのシステムエラー
-class ErrorApiNetwork extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = 'ApiNetworkError';
-	}
-}
-
-type NavigatorToasterOptions = {
-	api_url: string,
+type UserNavigatorOptions = {
+	db_api: string,
 	is_subdir: boolean,
 	is_query_page: boolean,
+	is_replace_toast: boolean,
 	duration: number,
 	min_interval: number,
 	max_interval: number,
@@ -25,10 +13,14 @@ type NavigatorToasterOptions = {
 	close_handler: (e: HTMLElement) => void,
 }
 
-class NavigatorToaster {
+type Trigger = { path: string, type: string, hour?: number[], week?: number[] }
+type Dict = { trigger: Trigger; word: string[] }[];
+
+class UserNavigator {
 	// 定数・設定
 	private readonly prefix = 'navigator';
-	private readonly api_url: string;
+	private readonly db_api: string;
+	private readonly is_replace_toast: boolean;
 	private readonly duration: number;
 	private readonly min_interval: number;
 	private readonly max_interval: number;
@@ -42,13 +34,14 @@ class NavigatorToaster {
 	private readonly current_path: string;
 
 	// 状態管理
-	private dict: Record<string, string[]> | null = null;
+	private dict: Dict | null = null;
 	private visited: Set<string> = new Set();
-	private handle?: number;
+	private handle?: ReturnType<typeof setTimeout>;
 
-	constructor({ api_url, is_subdir, is_query_page, duration = 8000, min_interval = 10000, max_interval = 20000, cache_ttl = 86400000, close_handler = (e) => e.remove() }: NavigatorToasterOptions) {
+	constructor({ db_api, is_subdir, is_query_page, is_replace_toast = true, duration = 0, min_interval = 10000, max_interval = 20000, cache_ttl = 86400000, close_handler = (e) => e.remove() }: UserNavigatorOptions) {
 		// 定数反映
-		this.api_url = api_url;
+		this.db_api = db_api;
+		this.is_replace_toast = is_replace_toast;
 		this.duration = duration;
 		this.min_interval = min_interval;
 		this.max_interval = max_interval;
@@ -81,18 +74,11 @@ class NavigatorToaster {
 		}
 	}
 
-	// 汎用関数
-	private bake<K extends keyof HTMLElementTagNameMap>(tagName: K, f: (e: HTMLElementTagNameMap[K]) => void) {
-		const e = document.createElement(tagName);
-		f(e);
-		return e;
-	}
-
 	/// データ読み込み
 	private async load() {
 		const load = localStorage.getItem(this.dict_key);
 		if (load) {
-			const { timestamp, dict }: { timestamp: number, dict: Record<string, string[]> } = JSON.parse(load);
+			const { timestamp, dict }: { timestamp: number, dict: Dict } = JSON.parse(load);
 			const now = Date.now();
 			if (timestamp + this.cache_ttl > now) this.dict = dict;
 		}
@@ -105,78 +91,105 @@ class NavigatorToaster {
 				const query = encodeURIComponent(key);
 				let res: Response;
 				try {
-					res = await fetch(`${this.api_url}?key=${query}`);
+					res = await fetch(`${this.db_api}?key=${query}`);
 				} catch (err) {
 					throw new ErrorApiNetwork('ネットワークエラーが発生しました');
 				}
-				if (res.ok) {
-					if (res.headers.get('Content-Type')?.includes('application/json')) {
-						// 成功
-						try {
-							this.dict = await res.json();
-						} catch (err) {
-							throw new ErrorNavigatorNotFound('対象のナビゲーター設定形式が異常です');
-						}
-						localStorage.setItem(this.dict_key, JSON.stringify({ timestamp: Date.now(), dict: this.dict }));
-					} else {
-						// 指定したものが見つからなかった
-						throw new ErrorNavigatorNotFound(await res.text());
-					}
-				} else {
-					// APIエラー
-					throw new ErrorApiNetwork(`API通信エラー: ${res.status} ${await res.text()}`);
+				if (!res.ok) throw new ErrorApiNetwork(`API通信エラー: ${res.status} ${await res.text()}`);	// APIエラー
+				if (!res.headers.get('Content-Type')?.includes('application/json')) throw new ErrorNavigatorNotFound(await res.text());	// 指定したものが見つからなかった
+				// 成功
+				try {
+					this.dict = await res.json();
+				} catch (err) {
+					throw new ErrorNavigatorNotFound('対象のナビゲーター設定形式が異常です');
 				}
+				localStorage.setItem(this.dict_key, JSON.stringify({ timestamp: Date.now(), dict: this.dict }));
 			}
 		}
 
-		if (this.dict !== null) {
-			// ここまでで読み込みが成功している
-			const load = localStorage.getItem(this.visited_key);
-			// SetオブジェクトはそのままJSON化できないため配列を経由する
-			this.visited = load ? new Set(JSON.parse(load)) : new Set();
-		} else {
-			throw new ErrorNavigatorNotFound('ナビゲーターが指定されていません');
-		}
+		if (this.dict === null) throw new ErrorNavigatorNotFound('ナビゲーターが指定されていません');
+		// ここまでで読み込みが成功している
+		const visited = localStorage.getItem(this.visited_key);
+		// SetオブジェクトはそのままJSON化できないため配列を経由する
+		this.visited = visited ? new Set(JSON.parse(visited)) : new Set();
 	}
 
-	/// トースト発火
-	private pop(trigger: 'access-first' | 'access' | 'random') {
+	private get_word(...conditions: ((trigger: Trigger) => boolean)[]) {
 		if (this.dict === null) return;
 
-		const words = this.dict[`${this.current_path}?${trigger}`];
+		const words = this.dict.find((item) => conditions.every((c) => c(item.trigger)))?.word;
 		if (words) {
 			const word = words[Math.floor(Math.random() * words.length)];
 			const pos = word.indexOf('|');
 			let icon, body;
-
 			if (pos !== -1) {
 				icon = word.substring(0, pos).trim();
 				body = word.substring(pos + 1).trim();
 			} else {
 				body = word.trim();
 			}
-			this.make_toast(body, icon);
+			return { body, icon };
 		}
 	}
 
+	/// トースト発火
+	private pop(type: string) {
+		const path_condition = (item: Trigger) => item.path === '*' || item.path === this.current_path;
+
+		let type_condition;
+		switch (type) {
+			case 'access-first':
+				type_condition = (item: Trigger) => item.type === 'access-first' || item.type === 'access' || item.type === 'random';
+				break;
+			case 'access':
+				type_condition = (item: Trigger) => item.type === 'access' || item.type === 'random';
+				break;
+			case 'random':
+				type_condition = (item: Trigger) => item.type === 'random';
+				break;
+			case 'click':
+				type_condition = (item: Trigger) => item.type === 'click';
+				break;
+			// case 'toast-success':
+			// 	type_condition = (item: Trigger) => item.type === 'toast-success' || item.type === 'toast';
+			// 	break;
+			// case 'toast-error':
+			// 	type_condition = (item: Trigger) => item.type === 'toast-error' || item.type === 'toast';
+			// 	break;
+			// case 'toast':
+			// 	type_condition = (item: Trigger) => item.type === 'toast';
+			// 	break;
+			default:
+				return;
+		}
+
+		const date = new Date();
+		const time = date.getHours();
+		const week = date.getDay();
+		const date_condition = (item: Trigger) => (item.hour ? item.hour[0] <= time && item.hour[1] >= time : true) && (item.week ? item.week.some((w) => w === week) : true);
+
+		const word = this.get_word(path_condition, type_condition, date_condition);
+		if (word) this.make_dom(word.body, word.icon);
+	}
+
 	/// トーストUI生成
-	private make_toast(body: string, icon?: string) {
+	private make_dom(body: string, icon?: string) {
 		const container_id = `${this.prefix}-container`;
 		let container = document.querySelector<HTMLElement>(`body>#${container_id}`);
 
 		if (!container) {
-			container = document.body.appendChild(this.bake('div', e => {
+			container = document.body.appendChild(bake('div', e => {
 				e.id = container_id;
 			}));
 		}
-
-		container.appendChild(this.bake('div', e => {
+		if (this.is_replace_toast) container.replaceChildren();
+		container.appendChild(bake('div', e => {
 			e.classList.add(`${this.prefix}-toast`);
-			if (icon) e.appendChild(this.bake('img', img => {
+			if (icon) e.appendChild(bake('img', img => {
 				img.classList.add(`${this.prefix}-icon`);
 				img.src = icon;
 			}));
-			e.appendChild(this.bake('p', p => {
+			e.appendChild(bake('p', p => {
 				p.classList.add(`${this.prefix}-body`);
 				p.innerHTML = body;
 			}));
@@ -220,7 +233,7 @@ class NavigatorToaster {
 		this.handle = window.setTimeout(this.reserve_next, wait);
 	}
 
-	/** 自動再生（ランダムトースト）を停止する */
+	/** 自動再生の停止 */
 	public stop() {
 		if (this.handle !== undefined) {
 			clearTimeout(this.handle);
