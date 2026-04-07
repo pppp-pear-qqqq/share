@@ -227,7 +227,7 @@ class UserNavigator {
 			// 	type_condition = (item: Trigger) => item.type === 'toast';
 			// 	break;
 			case 'disable':
-				return true;
+				return;
 			default:
 				type_cond = (item: Trigger) => item.type === type;
 		}
