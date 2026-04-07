@@ -1,7 +1,7 @@
 import { ErrorApiNetwork, ErrorNavigatorNotFound } from './error.ts';
 import { bake } from './utils.ts';
 
-type UserNavigatorOptions = {
+interface UserNavigatorOptions {
 	db_api: string,
 	is_subdir: boolean,
 	is_query_page: boolean,
@@ -17,6 +17,8 @@ type Trigger = { path: string, type: string, hour?: number[], week?: number[] }
 type Dict = { trigger: Trigger; word: string[] }[];
 
 class UserNavigator {
+	// インスタンス
+	public static instance: UserNavigator;
 	// 定数・設定
 	private readonly prefix = 'navigator';
 	private readonly db_api: string;
@@ -35,6 +37,7 @@ class UserNavigator {
 
 	// 状態管理
 	private dict: Dict | null = null;
+	private click_list: string[] = [];
 	private visited: Set<string> = new Set();
 	private handle?: ReturnType<typeof setTimeout>;
 
@@ -72,6 +75,8 @@ class UserNavigator {
 		} else {
 			this.current_path = location.pathname;
 		}
+
+		UserNavigator.instance = this;
 	}
 
 	/// データ読み込み
@@ -108,7 +113,13 @@ class UserNavigator {
 		}
 
 		if (this.dict === null) throw new ErrorNavigatorNotFound('ナビゲーターが指定されていません');
-		// ここまでで読み込みが成功している
+
+		// クリック反応要素をリストアップ
+		this.click_list = [...new Set(this.dict
+			.filter((item) => item.trigger.type.startsWith('click'))
+			.map((item) => item.trigger.type.substring('click'.length))
+		)];
+
 		const visited = localStorage.getItem(this.visited_key);
 		// SetオブジェクトはそのままJSON化できないため配列を経由する
 		this.visited = visited ? new Set(JSON.parse(visited)) : new Set();
@@ -132,47 +143,7 @@ class UserNavigator {
 		}
 	}
 
-	/// トースト発火
-	private pop(type: string) {
-		const path_condition = (item: Trigger) => item.path === '*' || item.path === this.current_path;
-
-		let type_condition;
-		switch (type) {
-			case 'access-first':
-				type_condition = (item: Trigger) => item.type === 'access-first' || item.type === 'access' || item.type === 'random';
-				break;
-			case 'access':
-				type_condition = (item: Trigger) => item.type === 'access' || item.type === 'random';
-				break;
-			case 'random':
-				type_condition = (item: Trigger) => item.type === 'random';
-				break;
-			case 'click':
-				type_condition = (item: Trigger) => item.type === 'click';
-				break;
-			// case 'toast-success':
-			// 	type_condition = (item: Trigger) => item.type === 'toast-success' || item.type === 'toast';
-			// 	break;
-			// case 'toast-error':
-			// 	type_condition = (item: Trigger) => item.type === 'toast-error' || item.type === 'toast';
-			// 	break;
-			// case 'toast':
-			// 	type_condition = (item: Trigger) => item.type === 'toast';
-			// 	break;
-			default:
-				return;
-		}
-
-		const date = new Date();
-		const time = date.getHours();
-		const week = date.getDay();
-		const date_condition = (item: Trigger) => (item.hour ? item.hour[0] <= time && item.hour[1] >= time : true) && (item.week ? item.week.some((w) => w === week) : true);
-
-		const word = this.get_word(path_condition, type_condition, date_condition);
-		if (word) this.make_dom(word.body, word.icon);
-	}
-
-	/// トーストUI生成
+	/// DOM生成
 	private make_dom(body: string, icon?: string) {
 		const container_id = `${this.prefix}-container`;
 		let container = document.querySelector<HTMLElement>(`body>#${container_id}`);
@@ -200,7 +171,7 @@ class UserNavigator {
 
 	/// 自動再生の予約
 	private reserve_next = () => {
-		this.pop('random');
+		this.talk('random');
 		const wait = Math.random() * (this.max_interval - this.min_interval) + this.min_interval;
 		this.handle = window.setTimeout(this.reserve_next, wait);
 	}
@@ -219,18 +190,73 @@ class UserNavigator {
 		// アクセス時
 		if (!this.visited.has(this.current_path)) {
 			// 初アクセス
-			this.pop('access-first');
+			this.talk('access-first');
 			this.visited.add(this.current_path);
 			// Setを配列に変換してから保存する
 			localStorage.setItem(this.visited_key, JSON.stringify(Array.from(this.visited)));
 		} else {
 			// 2回目以降
-			this.pop('access');
+			this.talk('access');
 		}
 
 		// 初回の定期実行予約
 		const wait = Math.random() * (this.max_interval - this.min_interval) + this.min_interval;
 		this.handle = window.setTimeout(this.reserve_next, wait);
+	}
+
+	/** トーストを表示する */
+	public talk(type: string) {
+		let type_cond;
+		switch (type) {
+			case 'access-first':
+				type_cond = (item: Trigger) => item.type === 'access-first' || item.type === 'access' || item.type === 'random';
+				break;
+			case 'access':
+				type_cond = (item: Trigger) => item.type === 'access' || item.type === 'random';
+				break;
+			case 'random':
+				type_cond = (item: Trigger) => item.type === 'random';
+				break;
+			// case 'toast-success':
+			// 	type_condition = (item: Trigger) => item.type === 'toast-success' || item.type === 'toast';
+			// 	break;
+			// case 'toast-error':
+			// 	type_condition = (item: Trigger) => item.type === 'toast-error' || item.type === 'toast';
+			// 	break;
+			// case 'toast':
+			// 	type_condition = (item: Trigger) => item.type === 'toast';
+			// 	break;
+			case 'disable':
+				return true;
+			default:
+				type_cond = (item: Trigger) => item.type === type;
+		}
+
+		const path_cond = (item: Trigger) => item.path === this.current_path || item.path === '*';
+
+		const date = new Date();
+		const hour = date.getHours();
+		const hour_cond = (item: Trigger) => {
+			if (!item.hour) return true;
+			const [start, end] = item.hour;
+			return start <= end
+				? (start <= hour && hour <= end)
+				: (start <= hour || hour <= end)
+		};
+		const week = date.getDay();
+		const week_cond = (item: Trigger) => {
+			if (!item.week) return true;
+			return item.week.includes(week);
+		};
+
+		const word = this.get_word(path_cond, type_cond, hour_cond, week_cond);
+		if (word) this.make_dom(word.body, word.icon);
+	}
+
+	/** クリック時条件を検索してtalk実行 */
+	public talk_by_click(event: Event) {
+		const item = this.click_list.find((item) => (event.target as HTMLElement | null)?.closest(item));
+		if (item) this.talk(`click${item}`);
 	}
 
 	/** 自動再生の停止 */
@@ -240,4 +266,15 @@ class UserNavigator {
 			this.handle = undefined;
 		}
 	}
+
+	public get has_click_list() {
+		return this.click_list.length > 0;
+	}
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+	setTimeout(() => {
+		const nav = UserNavigator.instance;
+		if (nav && nav.has_click_list) document.body.addEventListener('click', (ev) => nav.talk_by_click(ev));
+	}, 1000);
+});
