@@ -1,0 +1,106 @@
+<style>
+	#navigator-setting>section {
+		display: grid;
+		padding: 0.5lh;
+		border: 2px solid var(--border-color);
+		border-radius: 5px;
+
+		header,
+		div[role="list"],
+		div[role="listitem"] {
+			display: contents;
+		}
+
+		.handle {
+			grid-column: 1;
+			grid-row: span 3;
+			align-self: center;
+		}
+
+		.path,
+		[name="path"] {
+			grid-column: 2;
+		}
+
+		.type,
+		[name="type"] {
+			grid-column: 3;
+		}
+
+		.btn-add {
+			grid-column: 4 / 5;
+			grid-row: span 2;
+		}
+
+		.btn-del {
+			grid-column: 4;
+		}
+
+		.word {
+			grid-column: 2 / 4;
+		}
+
+		[name="word"] {
+			grid-column: 2 / 5;
+			resize: vertical;
+		}
+
+		.preview {
+			grid-column: 2 / 5;
+		}
+
+		div[role="listitem"]::before {
+			content: "";
+			grid-column: 1 / 5;
+			margin: 0.5lh 0;
+			border-top: 1px solid var(--border-color);
+		}
+	}
+</style>
+<form id="navigator-setting" class="form-group">
+	<h3>ナビゲーター設定(拡張機能)</h3>
+	<input type="hidden" name="eno">
+	<label>登録名<input type="text" name="name"></label>
+	<section>
+		<header>
+			<div class="path">対象パス</div>
+			<div class="type">種別</div>
+			<!--<div class="option">オプション</div>-->
+			<button type="button" class="btn-sm btn-add">追加</button>
+			<div class="word">セリフ</div>
+		</header>
+		<template>
+			<div role="listitem">
+				<div class="handle">≡</div>
+				<input type="text" name="path" placeholder="btest/public_html/profile_edit.php">
+				<input type="text" name="type" list="type-list">
+				<!--<div class="option">TODO オプションは専用モーダルで設定する</div>-->
+				<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
+				<textarea name="word" placeholder="https://.../icon.webp|「セリフ」"></textarea>
+				<!--<div class="preview">TODO</div>-->
+			</div>
+		</template>
+		<datalist id="type-list">
+			<option value="random">ランダム時間毎</option>
+			<option value="access">アクセス時</option>
+			<option value="access-first">初回アクセス時</option>
+		</datalist>
+		<div role="list">
+			<div role="listitem">
+				<div class="handle">≡</div>
+				<input type="text" name="path" placeholder="btest/public_html/profile_edit.php">
+				<input type="text" name="type" list="type-list">
+				<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
+				<textarea name="word" placeholder="https://.../icon.webp|「セリフ」"></textarea>
+			</div>
+			<div role="listitem">
+				<div class="handle">≡</div>
+				<input type="text" name="path" placeholder="btest/public_html/profile_edit.php">
+				<input type="text" name="type" list="type-list">
+				<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
+				<textarea name="word" placeholder="https://.../icon.webp|「セリフ」"></textarea>
+			</div>
+		</div>
+	</section>
+	<button type="submit">登録する</button>
+</form>
