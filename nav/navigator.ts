@@ -126,9 +126,7 @@ class UserNavigator {
 	}
 
 	private get_word(...conditions: ((trigger: Trigger) => boolean)[]) {
-		if (this.dict === null) return;
-
-		const words = this.dict.find((item) => conditions.every((c) => c(item.trigger)))?.word;
+		const words = this.dict?.find((item) => conditions.every((c) => c(item.trigger)))?.word;
 		if (words) {
 			const word = words[Math.floor(Math.random() * words.length)];
 			const pos = word.indexOf('|');
