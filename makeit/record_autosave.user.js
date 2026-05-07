@@ -14,7 +14,7 @@
 (function () {
 	'use strict';
 	const editor = document.querySelector('#editor-area');
-	window.addEventListener('popstate', () => {
+	window.addEventListener('unload', () => {
 		const content = editor.value;
 		localStorage.setItem('record_autosave', content);
 	});
