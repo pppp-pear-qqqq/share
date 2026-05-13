@@ -1,0 +1,85 @@
+/* common */
+[hidden],
+input[type="hidden"] {
+	display: none !important;
+}
+
+input:required::before {
+	content: "*";
+	color: #f00;
+	margin-right: 0.5em;
+}
+
+div[role="list"] {
+	display: flex;
+	flex-direction: column;
+}
+
+/* layout */
+#navigator-setting {
+	all: revert;
+
+	label {
+		display: flex;
+
+		input:is([type="text"], [type="number"]) {
+			flex-grow: 1;
+		}
+	}
+	textarea {
+		display: block;
+	}
+	div[role="listitem"] {
+		display: grid;
+		grid-template:
+			"h p t o d" auto
+			"h w w w w" 1fr
+			"h v v v v" auto / auto 1fr auto auto auto;
+
+		> .handle {
+			grid-area: h;
+		}
+		> .path,
+		> [name="path"] {
+			grid-area: p;
+		}
+		> .type,
+		> [name="type"] {
+			grid-area: t;
+		}
+		> .option {
+			grid-area: o;
+		}
+		> .del-item {
+			grid-area: d;
+		}
+		> .word,
+		> [name="word"] {
+			grid-area: w;
+		}
+		> .preview {
+			grid-area: v;
+		}
+
+		.preview {
+			display: flex;
+			align-items: center;
+		}
+	}
+	[name="preview"]:not(:checked) ~ .preview {
+		display: none;
+	}
+}
+#navigator-setting-modal {
+	> form {
+		display: flex;
+		flex-direction: column;
+
+		[type="checkbox"][name="hour"]:not(:checked) ~ .hour {
+			display: none;
+		}
+		[type="checkbox"][name="week"]:not(:checked) ~ .week {
+			display: none;
+		}
+	}
+}

@@ -1,106 +1,74 @@
-<style>
-	#navigator-setting>section {
-		display: grid;
-		padding: 0.5lh;
-		border: 2px solid var(--border-color);
-		border-radius: 5px;
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<meta name="robots" content="none">
+		<meta name="viewport" content="width=device-width,viewport-fit=cover">
 
-		header,
-		div[role="list"],
-		div[role="listitem"] {
-			display: contents;
-		}
-
-		.handle {
-			grid-column: 1;
-			grid-row: span 3;
-			align-self: center;
-		}
-
-		.path,
-		[name="path"] {
-			grid-column: 2;
-		}
-
-		.type,
-		[name="type"] {
-			grid-column: 3;
-		}
-
-		.btn-add {
-			grid-column: 4 / 5;
-			grid-row: span 2;
-		}
-
-		.btn-del {
-			grid-column: 4;
-		}
-
-		.word {
-			grid-column: 2 / 4;
-		}
-
-		[name="word"] {
-			grid-column: 2 / 5;
-			resize: vertical;
-		}
-
-		.preview {
-			grid-column: 2 / 5;
-		}
-
-		div[role="listitem"]::before {
-			content: "";
-			grid-column: 1 / 5;
-			margin: 0.5lh 0;
-			border-top: 1px solid var(--border-color);
-		}
-	}
-</style>
-<form id="navigator-setting" class="form-group">
-	<h3>ナビゲーター設定(拡張機能)</h3>
-	<input type="hidden" name="eno">
-	<label>登録名<input type="text" name="name"></label>
-	<section>
-		<header>
-			<div class="path">対象パス</div>
-			<div class="type">種別</div>
-			<!--<div class="option">オプション</div>-->
-			<button type="button" class="btn-sm btn-add">追加</button>
-			<div class="word">セリフ</div>
-		</header>
-		<template>
-			<div role="listitem">
-				<div class="handle">≡</div>
-				<input type="text" name="path" placeholder="btest/public_html/profile_edit.php">
-				<input type="text" name="type" list="type-list">
-				<!--<div class="option">TODO オプションは専用モーダルで設定する</div>-->
-				<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
-				<textarea name="word" placeholder="https://.../icon.webp|「セリフ」"></textarea>
-				<!--<div class="preview">TODO</div>-->
-			</div>
-		</template>
-		<datalist id="type-list">
-			<option value="random">ランダム時間毎</option>
-			<option value="access">アクセス時</option>
-			<option value="access-first">初回アクセス時</option>
-		</datalist>
-		<div role="list">
-			<div role="listitem">
-				<div class="handle">≡</div>
-				<input type="text" name="path" placeholder="btest/public_html/profile_edit.php">
-				<input type="text" name="type" list="type-list">
-				<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
-				<textarea name="word" placeholder="https://.../icon.webp|「セリフ」"></textarea>
-			</div>
-			<div role="listitem">
-				<div class="handle">≡</div>
-				<input type="text" name="path" placeholder="btest/public_html/profile_edit.php">
-				<input type="text" name="type" list="type-list">
-				<button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>
-				<textarea name="word" placeholder="https://.../icon.webp|「セリフ」"></textarea>
-			</div>
-		</div>
-	</section>
-	<button type="submit">登録する</button>
-</form>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<form id="navigator-setting" class="form-group">
+			<h3>ナビゲーター設定(拡張機能)</h3>
+			<input type="hidden" name="eno">
+			<label><i class="ri-user-4-line"></i><input type="text" name="name" placeholder="登録名" required></label>
+			<label><i class="ri-lock-line"></i><input type="password" name="password" placeholder="パスワード" required></label>
+			<section class="words">
+				<h4>セリフ設定</h4>
+				<label>プレビュー表示<input type="checkbox" name="preview"></label>
+				<div role="list" class="sortable"></div>
+				<template>
+					<div role="listitem">
+						<div class="handle"></div>
+						<input type="text" name="path" placeholder="対象パス" required>
+						<input type="text" name="type" list="type-list" placeholder="種別" required>
+						<button type="button" class="option">
+							オプション
+							<input type="hidden" name="hour">
+							<input type="hidden" name="week">
+						</button>
+						<button type="button" class="del-item" onclick="this.parentElement.remove()"></button>
+						<textarea name="word" placeholder="セリフ" required></textarea>
+						<div class="preview">
+							<img class="icon">
+							<p class="word"></p>
+						</div>
+					</div>
+				</template>
+				<datalist id="type-list">
+					<option value="random">ランダム時間毎</option>
+					<option value="access">アクセス時</option>
+					<option value="access-first">初回アクセス時</option>
+				</datalist>
+			</section>
+			<button type="submit">登録</button>
+		</form>
+		<dialog id="navigator-setting-modal">
+			<form id="navigator-setting-options">
+				<h4>発話条件オプション</h4>
+				<label>時刻指定<input type="checkbox" name="hour"></label>
+				<div class="hour" hidden>
+					<input type="number" name="hour-start" placeholder="開始(0-23)" min="0" max="23">
+					<input type="number" name="hour-end" placeholder="終了(0-23)" min="0" max="23">
+				</div>
+				<label>曜日指定<input type="checkbox" name="week"></label>
+				<div class="week" hidden>
+					<label>日<input type="checkbox" name="day" value="0"></label>
+					<label>月<input type="checkbox" name="day" value="1"></label>
+					<label>火<input type="checkbox" name="day" value="2"></label>
+					<label>水<input type="checkbox" name="day" value="3"></label>
+					<label>木<input type="checkbox" name="day" value="4"></label>
+					<label>金<input type="checkbox" name="day" value="5"></label>
+					<label>土<input type="checkbox" name="day" value="6"></label>
+				</div>
+				<div>
+					<button type="submit">設定</button>
+					<button type="button" class="cancel">キャンセル</button>
+				</div>
+			</form>
+		</dialog>
+	</body>
+</html>
